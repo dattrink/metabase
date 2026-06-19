@@ -11,11 +11,17 @@
 
 (set! *warn-on-reflection* true)
 
+(def ^:private insecure-ssl?
+  "Allow insecure SSL connections (self-signed certs) when MB_OIDC_INSECURE_SSL=true.
+   For development/sandbox environments only."
+  (= "true" (System/getenv "MB_OIDC_INSECURE_SSL")))
+
 (def ^:private default-opts
-  {:as               :json
-   :throw-exceptions false
-   :conn-timeout     5000
-   :socket-timeout   5000})
+  (cond-> {:as               :json
+           :throw-exceptions false
+           :conn-timeout     5000
+           :socket-timeout   5000}
+    insecure-ssl? (assoc :insecure? true)))
 
 (defn- validate-url!
   "Validate that a URL is allowed by the current `oidc-allowed-networks` setting.
