@@ -1,3 +1,4 @@
+import { Wso2Button } from "metabase/auth/components/Wso2Button/Wso2Button";
 import {
   NotFoundPlaceholder,
   PluginPlaceholder,
@@ -22,7 +23,12 @@ const getDefaultPluginAuthProviders = () => ({
   SettingsSAMLForm: NotFoundPlaceholder,
   SettingsJWTForm: NotFoundPlaceholder,
   SettingsOIDCForm: NotFoundPlaceholder,
-  providers: [] as GetAuthProviders[],
+  providers: [
+    (providers) => [
+      ...providers,
+      { name: "wso2", Button: Wso2Button },
+    ],
+  ] as GetAuthProviders[],
 });
 
 export const PLUGIN_AUTH_PROVIDERS = getDefaultPluginAuthProviders();
