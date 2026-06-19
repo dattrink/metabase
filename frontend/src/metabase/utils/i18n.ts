@@ -1,3 +1,5 @@
+import "metabase/utils/dayjs";
+
 import dayjs from "dayjs";
 import type { LocaleData } from "ttag";
 import { addLocale, useLocale } from "ttag";
