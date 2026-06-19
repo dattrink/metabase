@@ -3,6 +3,7 @@
    [metabase.api.util.handlers :as handlers]
    [metabase.config.core :as config]
    [metabase.sso.api.slack-connect :as slack-connect.api]
+   [metabase.sso.api.wso2 :as wso2.api]
    [ring.util.response :as response]))
 
 (let [bad-req (response/bad-request {:message "The auth/sso endpoint only exists in enterprise builds"
@@ -24,7 +25,8 @@
    Slack Connect (OSS) is always available. Other SSO routes (SAML, JWT, OIDC) require EE."
   (handlers/routes
    ;; Slack Connect routes always available (OSS)
-   (handlers/route-map-handler {"/auth" {"/sso" {"/slack-connect" slack-connect.api/routes}}})
+    (handlers/route-map-handler {"/auth" {"/sso" {"/slack-connect" slack-connect.api/routes
+                                                  "/wso2" wso2.api/routes}}})
    ;; Other SSO routes require EE
    (if (and config/ee-available? (not *compile-files*))
      (requiring-resolve 'metabase-enterprise.sso.api.routes/routes)
