@@ -11,17 +11,19 @@
 
 (set! *warn-on-reflection* true)
 
-(def ^:private insecure-ssl?
+(defn- insecure-ssl?
   "Allow insecure SSL connections (self-signed certs) when MB_OIDC_INSECURE_SSL=true.
    For development/sandbox environments only."
+  []
   (= "true" (System/getenv "MB_OIDC_INSECURE_SSL")))
 
-(def ^:private default-opts
+(defn- build-opts
+  []
   (cond-> {:as               :json
            :throw-exceptions false
            :conn-timeout     5000
            :socket-timeout   5000}
-    insecure-ssl? (assoc :insecure? true)))
+    (insecure-ssl?) (assoc :insecure? true)))
 
 (defn- validate-url!
   "Validate that a URL is allowed by the current `oidc-allowed-networks` setting.
@@ -40,7 +42,7 @@
    (oidc-get url {}))
   ([url opts]
    (validate-url! url)
-   (http/get url (merge default-opts opts))))
+    (http/get url (merge (build-opts) opts))))
 
 (defn oidc-post
   "Perform a validated POST request for OIDC operations.
@@ -49,4 +51,4 @@
    (oidc-post url {}))
   ([url opts]
    (validate-url! url)
-   (http/post url (merge default-opts opts))))
+    (http/post url (merge (build-opts) opts))))
