@@ -281,6 +281,69 @@
               (assert (#{:allow-all :allow-private :external-only} (keyword new-value))))
             (setting/set-value-of-type! :keyword :oidc-allowed-networks new-value)))
 
+;;; ------------------------------------------------ WSO2 Identity Server ------------------------------------------------
+
+(defsetting wso2-issuer-uri
+  (deferred-tru "WSO2 Identity Server issuer URL. This is the base URL for your WSO2 IS instance (e.g., https://idp.example.com:9443/oauth2/oidcdiscovery).")
+  :encryption :when-encryption-key-set
+  :visibility :public
+  :audit      :getter)
+
+(defsetting wso2-client-id
+  (deferred-tru "Client ID for your WSO2 Identity Server application.")
+  :encryption :when-encryption-key-set
+  :visibility :public
+  :audit      :getter)
+
+(defsetting wso2-client-secret
+  (deferred-tru "Client Secret for your WSO2 Identity Server application.")
+  :encryption :when-encryption-key-set
+  :visibility :public
+  :audit      :no-value
+  :sensitive? true)
+
+(defn unobfuscated-wso2-client-secret
+  "Get the unobfuscated value of [[wso2-client-secret]]."
+  []
+  (setting/get-value-of-type :string :wso2-client-secret))
+
+(defsetting wso2-attribute-email
+  (deferred-tru "OIDC claim attribute for the user''s email address.")
+  :default    "email"
+  :encryption :no
+  :audit      :getter)
+
+(defsetting wso2-attribute-firstname
+  (deferred-tru "OIDC claim attribute for the user''s first name.")
+  :default    "given_name"
+  :encryption :no
+  :audit      :getter)
+
+(defsetting wso2-attribute-lastname
+  (deferred-tru "OIDC claim attribute for the user''s last name.")
+  :default    "family_name"
+  :encryption :no
+  :audit      :getter)
+
+(defsetting wso2-configured
+  (deferred-tru "Is WSO2 Identity Server configured?")
+  :type    :boolean
+  :setter  :none
+  :getter  (fn [] (boolean (and (wso2-client-id)
+                                (wso2-client-secret)
+                                (wso2-issuer-uri)))))
+
+(defsetting wso2-enabled
+  (deferred-tru "Is WSO2 Identity Server SSO enabled?")
+  :type       :boolean
+  :default    false
+  :visibility :public
+  :audit      :getter
+  :getter     (fn []
+                (if (wso2-configured)
+                  (setting/get-value-of-type :boolean :wso2-enabled)
+                  false)))
+
 (defn- ee-sso-configured? []
   (when config/ee-available?
     (or (setting/get :other-sso-enabled?)
@@ -291,6 +354,7 @@
   []
   (or (google-auth-enabled)
       (ldap-enabled)
+      (wso2-enabled)
       (ee-sso-configured?)))
 
 (defn sso-source-enabled?
@@ -311,9 +375,10 @@
      :jwt    (setting/get :jwt-enabled)
      :oidc   (setting/get :oidc-enabled)
      :slack  (setting/get :slack-connect-enabled)
-     :scim   (setting/get :scim-enabled)
-     ;; Unknown sso_source -- treat as disabled to allow password reset
-     false)))
+      :scim   (setting/get :scim-enabled)
+      :wso2   (setting/get :wso2-enabled)
+      ;; Unknown sso_source -- treat as disabled to allow password reset
+      false)))
 
 (define-multi-setting google-auth-auto-create-accounts-domain
   (deferred-tru "When set, allow users to sign up on their own if their Google account email address is from this domain.")

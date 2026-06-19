@@ -20,13 +20,22 @@
  [metabase.sso.oidc.state
   wrap-oidc-redirect
   clear-oidc-state-cookie]
- [metabase.sso.settings
-  google-auth-client-id
-  google-auth-enabled
-  ldap-enabled
-  send-new-sso-user-admin-email?
-  sso-enabled?
-  sso-source-enabled?])
+  [metabase.sso.settings
+   google-auth-client-id
+   google-auth-enabled
+   ldap-enabled
+   send-new-sso-user-admin-email?
+   sso-enabled?
+   sso-source-enabled?
+   wso2-issuer-uri
+   wso2-client-id
+   wso2-client-secret
+   unobfuscated-wso2-client-secret
+   wso2-enabled
+   wso2-configured
+   wso2-attribute-email
+   wso2-attribute-firstname
+   wso2-attribute-lastname])
 
 #_{:clj-kondo/ignore [:missing-docstring]}
 (p/import-def metabase.sso.ldap.default-implementation/UserInfo LDAPUserInfo)
