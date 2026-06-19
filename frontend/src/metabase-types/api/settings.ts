@@ -588,6 +588,14 @@ interface PublicSettings {
   engines: Record<EngineKey, Engine>;
   "google-auth-client-id": string | null;
   "google-auth-enabled": boolean;
+  "wso2-issuer-uri": string | null;
+  "wso2-client-id": string | null;
+  "wso2-client-secret": string | null;
+  "wso2-enabled": boolean;
+  "wso2-configured": boolean;
+  "wso2-attribute-email": string | null;
+  "wso2-attribute-firstname": string | null;
+  "wso2-attribute-lastname": string | null;
   "has-user-setup": boolean;
   "help-link": HelpLinkSetting;
   "help-link-custom-destination": string;
