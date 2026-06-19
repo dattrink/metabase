@@ -12,6 +12,7 @@
    [metabase.api.open-api :as open-api]
    [metabase.api.routes.common :as routes.common :refer [+static-apikey]]
    [metabase.api.util]
+   [metabase.api.wso2]
    [metabase.api.util.handlers :as handlers]
    [metabase.bookmarks.api]
    [metabase.bug-reporting.api]
@@ -81,7 +82,8 @@
          metabase.analytics.api/keep-me
          metabase.analytics.api.proxy/keep-me
          metabase.api-keys.api/keep-me
-         metabase.api.util/keep-me
+          metabase.api.util/keep-me
+          metabase.api.wso2/keep-me
          metabase.bookmarks.api/keep-me
          metabase.bug-reporting.api/keep-me
          metabase.cache.api/keep-me
@@ -237,7 +239,8 @@
    "/upload"               (+auth 'metabase.upload.api)
    "/user"                 (+auth 'metabase.users-rest.api)
    "/user-key-value"       (+auth 'metabase.user-key-value.api)
-   "/util"                 'metabase.api.util})
+   "/util"                 'metabase.api.util
+   "/wso2"                 (+auth metabase.api.wso2/routes)})
 ;;; ↑↑↑ KEEP THIS SORTED OR ELSE ↑↑↑
 
 ;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
